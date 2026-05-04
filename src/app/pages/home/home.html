@@ -1,0 +1,77 @@
+<main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+        
+        <div class="space-y-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Bot Trading actif
+            </div>
+            
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter leading-tight hero-title">
+                Domptez la <br/>
+                <span class="text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-cyan-400">Investo</span>
+            </h1>
+            
+            <p class="text-gray-400 text-lg md:text-xl max-w-md leading-relaxed hero-subtitle">
+                Tout dans la veste, rien sur le compte en banque. Je sais pas quoi mettre ici, on va faire comme si c'était un texte important que personne va lire.
+            </p>
+
+            <div class="flex flex-wrap gap-4 hero-cta">
+                <button class="btn-gradient text-black px-8 py-4 rounded-xl font-bold text-lg shadow-[0_0_30px_rgba(0,255,153,0.2)]">Démarrer maintenant</button>
+                <button class="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-xl font-bold text-lg transition-all">Voir les prix</button>
+            </div>
+        </div>
+
+        <!-- Interactive Trading Canvas Card -->
+        <div class="chart-container aspect-square md:aspect-video lg:aspect-square flex flex-col p-6 space-y-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-500 text-sm font-bold uppercase tracking-tighter">BTC / USDT</p>
+                    <h2 class="text-3xl font-bold text-amber-50" id="price-display">64,281.00</h2>
+                    <p class="text-emerald-400 text-sm font-bold">+2.41% <span class="text-gray-600 font-normal">24h</span></p>
+                </div>
+                <div class="flex gap-2">
+                    <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center cursor-pointer hover:bg-white/10">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex grow relative mt-4">
+                <canvas id="tradingChart" class="w-full h-full"></canvas>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t border-white/5">
+                <div class="text-center">
+                    <p class="text-[10px] text-amber-50 uppercase">Volume</p>
+                    <p class="text-sm font-bold text-amber-50">1.2B</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] text-amber-50 uppercase">Max 24h</p>
+                    <p class="text-sm font-bold text-amber-50">65,902</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] text-amber-50 uppercase">Min 24h</p>
+                    <p class="text-sm font-bold text-amber-50">62,100</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticker Tape -->
+    <div class="mt-32 overflow-hidden border-y border-white/5 py-8 whitespace-nowrap relative">
+        <div class="ticker-scroll flex gap-20 items-center">
+            <div class="flex items-center gap-3"><span class="font-bold">ETH/USDT</span> <span class="text-emerald-400">3,450.21 (+1.2%)</span></div>
+            <div class="flex items-center gap-3"><span class="font-bold">SOL/USDT</span> <span class="text-rose-400">145.10 (-0.5%)</span></div>
+            <div class="flex items-center gap-3"><span class="font-bold">DOT/USDT</span> <span class="text-emerald-400">7.21 (+4.8%)</span></div>
+            <div class="flex items-center gap-3"><span class="font-bold">AVAX/USDT</span> <span class="text-rose-400">34.80 (-2.1%)</span></div>
+            <!-- Duplicate for seamless scroll -->
+            <div class="flex items-center gap-3"><span class="font-bold">ETH/USDT</span> <span class="text-emerald-400">3,450.21 (+1.2%)</span></div>
+            <div class="flex items-center gap-3"><span class="font-bold">SOL/USDT</span> <span class="text-rose-400">145.10 (-0.5%)</span></div>
+            <div class="flex items-center gap-3"><span class="font-bold">DOT/USDT</span> <span class="text-emerald-400">7.21 (+4.8%)</span></div>
+        </div>
+    </div>
+</main>
