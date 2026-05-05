@@ -1,0 +1,191 @@
+<div class="dashboard-container">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo"><span>A</span></div>
+      <span class="brand-name">TRADING BOT</span>
+    </div>
+
+    <nav class="sidebar-menu">
+      <ul>
+        @for (item of menuItems; track item.label) {
+          <li [class.active]="item.active">
+            <a href="#">
+              <i [class]="item.icon"></i>
+              <span>{{ item.label }}</span>
+              @if (item.hasArrow) {
+                <i class="fas fa-chevron-down arrow"></i>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="bot-status-pill" [class.running]="botStatus().running">
+        <span class="status-dot"></span>
+        {{ botStatus().running ? 'Bot actif' : 'Bot arrêté' }}
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main-content">
+    <!-- Top navbar -->
+    <nav class="top-navbar">
+      <div class="navbar-left">
+        <i class="fas fa-bars menu-toggle"></i>
+        <h5 class="page-title">DASHBOARD</h5>
+      </div>
+      <div class="navbar-right">
+        <i class="fas fa-search"></i>
+        <i class="fas fa-bell"></i>
+        <div class="profile">
+          <img src="https://i.pravatar.cc/40" alt="profile" />
+          <i class="fas fa-caret-down"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== HERO : KPI principaux + bouton bot ===== -->
+    <section class="hero-row">
+      <!-- KPI 1 : capital initial -->
+      <div class="card kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon icon-blue">
+            <i class="fas fa-piggy-bank"></i>
+          </div>
+          <span class="kpi-label">Capital initial</span>
+        </div>
+        <div class="kpi-value">
+          {{ initialCapital() | currency:'EUR':'symbol':'1.2-2':'fr' }}
+        </div>
+        <div class="kpi-footer">Investissement de départ</div>
+      </div>
+
+      <!-- KPI 2 : total gains -->
+      <div class="card kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon" [class.icon-green]="isProfit()" [class.icon-red]="!isProfit()">
+            <i class="fas" [class.fa-arrow-trend-up]="isProfit()" [class.fa-arrow-trend-down]="!isProfit()"></i>
+          </div>
+          <span class="kpi-label">Gains totaux</span>
+        </div>
+        <div class="kpi-value" [class.positive]="isProfit()" [class.negative]="!isProfit()">
+          {{ totalGain() | currency:'EUR':'symbol':'1.2-2':'fr' }}
+        </div>
+        <div class="kpi-footer">
+          Solde actuel : {{ currentBalance() | currency:'EUR':'symbol':'1.2-2':'fr' }}
+        </div>
+      </div>
+
+      <!-- KPI 3 : pourcentage -->
+      <div class="card kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon icon-gradient">
+            <i class="fas fa-percent"></i>
+          </div>
+          <span class="kpi-label">Performance</span>
+        </div>
+        <div class="kpi-value" [class.positive]="isProfit()" [class.negative]="!isProfit()">
+          {{ isProfit() ? '+' : '' }}{{ gainPercentage() | number:'1.2-2' }}%
+        </div>
+        <div class="kpi-footer">
+          Win rate : {{ winRate() | number:'1.0-1' }}%
+        </div>
+      </div>
+
+      <!-- KPI 4 : bouton bot -->
+      <div class="card bot-card">
+        <div class="bot-card-header">
+          <div class="kpi-label">Contrôle du bot</div>
+          <div class="bot-state-text">
+            @if (botStatus().running) {
+              <span class="live-dot"></span> EN MARCHE
+            } @else {
+              <span class="off-dot"></span> ARRÊTÉ
+            }
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="bot-button"
+          [class.running]="botStatus().running"
+          (click)="toggleBot()"
+        >
+          <i class="fas" [class.fa-play]="!botStatus().running" [class.fa-stop]="botStatus().running"></i>
+          {{ botStatus().running ? 'Arrêter le bot' : 'Lancer le bot' }}
+        </button>
+
+        @if (botStatus().running && botStatus().startedAt) {
+          <div class="bot-runtime">
+            Démarré à {{ botStatus().startedAt | date:'HH:mm:ss' }}
+          </div>
+        } @else {
+          <div class="bot-runtime muted">Le bot est en veille</div>
+        }
+      </div>
+    </section>
+
+    <!-- ===== EVOLUTION DU SOLDE ===== -->
+    <section class="card chart-main">
+      <div class="card-header">
+        <div>
+          <p class="card-subtitle">Évolution du portefeuille</p>
+          <h3 class="card-title">
+            {{ currentBalance() | currency:'EUR':'symbol':'1.2-2':'fr' }}
+            <span class="chip" [class.positive]="isProfit()" [class.negative]="!isProfit()">
+              {{ isProfit() ? '+' : '' }}{{ gainPercentage() | number:'1.2-2' }}%
+            </span>
+          </h3>
+        </div>
+        <div class="tab-buttons">
+          <button [class.active]="activeRange() === '7d'" (click)="setRange('7d')">7j</button>
+          <button [class.active]="activeRange() === '30d'" (click)="setRange('30d')">30j</button>
+          <button [class.active]="activeRange() === '1y'" (click)="setRange('1y')">1an</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas #evolutionCanvas></canvas>
+      </div>
+    </section>
+
+    <!-- ===== 3 GRAPHIQUES SECONDAIRES ===== -->
+    <section class="bottom-charts">
+      <div class="card chart-card">
+        <p class="card-subtitle">Gains cumulés</p>
+        <h4 class="card-title-small">
+          <i class="fas fa-chart-line accent"></i>
+          {{ totalGain() | currency:'EUR':'symbol':'1.2-2':'fr' }}
+        </h4>
+        <div class="chart-container-small">
+          <canvas #gainsCanvas></canvas>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <p class="card-subtitle">Répartition</p>
+        <h4 class="card-title-small">
+          <i class="fas fa-chart-pie accent"></i>
+          Capital + Gains
+        </h4>
+        <div class="chart-container-small">
+          <canvas #distributionCanvas></canvas>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <p class="card-subtitle">Gains quotidiens</p>
+        <h4 class="card-title-small">
+          <i class="fas fa-chart-column accent"></i>
+          Meilleur : {{ bestDay() | currency:'EUR':'symbol':'1.0-2':'fr' }}
+        </h4>
+        <div class="chart-container-small">
+          <canvas #dailyCanvas></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
