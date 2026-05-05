@@ -37,6 +37,7 @@ export class Login {
     event.preventDefault();
     const credentials = this.loginModel()
     this.authService.login(credentials).subscribe({
+      // todo : ajouter un toast 
       next: () => {
         this.router.navigate(['']);
       }

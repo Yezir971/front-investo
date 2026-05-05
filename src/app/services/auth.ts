@@ -3,9 +3,17 @@ import { inject, Injectable, signal } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { tap } from 'rxjs';
 
+interface CredentialSignup {
+  name:string ,
+  lastname: string,
+  email: string,
+  password: string
+}
+
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthService {
   private http = inject(HttpClient)
   private coockieService = inject(CookieService)
@@ -34,6 +42,17 @@ export class AuthService {
         this.currentUser.set(response);
       })
     )
-
   }
+
+  public signup(credential:CredentialSignup){
+    return this.http.post<{data : string}>(`${this.API_URL}/api/user`, credential).pipe(
+      tap(response => {
+        console.log(response)
+      })
+    )
+  }
+
+
+
+
 }
