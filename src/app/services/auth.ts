@@ -30,9 +30,16 @@ export class AuthService {
 
 
   public login(credential : {email: string, password: string}) {
-    return this.http.post<{data : string}>(`${this.API_URL}/api/user/auth`, credential).pipe(
+    return this.http.post<{data : string, user: {id: string}}>(`${this.API_URL}/api/user/auth`, credential).pipe(
       tap(response => {
         this.coockieService.set('jwt_token', response.data, { 
+          expires: 1,
+          path: '/',
+          secure: true, 
+          sameSite: 'Strict' 
+        });
+
+        this.coockieService.set('user_id', response.user.id, { 
           expires: 1,
           path: '/',
           secure: true, 
@@ -45,7 +52,7 @@ export class AuthService {
   }
 
   public signup(credential:CredentialSignup){
-    return this.http.post<{data : string}>(`${this.API_URL}/api/user`, credential).pipe(
+    return this.http.post<{data : string}>(`${this.API_URL}/api/user/signup`, credential).pipe(
       tap(response => {
         console.log(response)
       })
