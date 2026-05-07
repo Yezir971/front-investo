@@ -21,6 +21,6 @@ export const routes: Routes = [
     {
         path:'dashboard',
         component:Dashboard,
-        // canActivate:[myGuardGuard]
+        canActivate:[myGuardGuard]
     }
 ];
