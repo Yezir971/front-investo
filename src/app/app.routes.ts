@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Signup } from './pages/signup/signup';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { myGuardGuard } from './guards/my-guard-guard';
 
 export const routes: Routes = [
     {
@@ -18,6 +20,7 @@ export const routes: Routes = [
     },
     {
         path:'dashboard',
-        component:Home
+        component:Dashboard,
+        // canActivate:[myGuardGuard]
     }
 ];
