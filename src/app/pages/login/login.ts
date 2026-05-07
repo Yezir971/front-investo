@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { email, form, FormField, required } from '@angular/forms/signals';
+import { HttpClient } from '@angular/common/http';
 
 
 interface LoginData {
@@ -31,7 +32,9 @@ export class Login {
 
   private router = inject(Router);
   private authService = inject(AuthService)
-
+  
+  product: any;
+  constructor(private http: HttpClient) { }
 
   onSubmit(event : Event){
     event.preventDefault();
@@ -39,7 +42,7 @@ export class Login {
     this.authService.login(credentials).subscribe({
       // todo : ajouter un toast 
       next: () => {
-        this.router.navigate(['']);
+        this.router.navigate(['dashboard']);
       }
     })
   }

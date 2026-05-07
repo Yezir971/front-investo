@@ -27,6 +27,7 @@ export class AuthService {
   public get userDetails(){
     return (localStorage.getItem('jwt_token'));
   }
+  token = signal<string | null>(localStorage.getItem('auth_token'));
 
 
   public login(credential : {email: string, password: string}) {
@@ -45,7 +46,9 @@ export class AuthService {
           secure: true, 
           sameSite: 'Strict' 
         });
-        
+        localStorage.setItem('auth_token', response.data);
+        this.token.set(response.data);
+
         this.currentUser.set(response);
       })
     )
@@ -60,6 +63,13 @@ export class AuthService {
   }
 
 
+  logout() {
+    localStorage.removeItem('auth_token');
+    this.token.set(null);
+  }
 
+  getToken(): string | null {
+    return this.token();
+  }
 
 }
