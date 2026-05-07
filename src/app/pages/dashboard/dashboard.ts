@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
@@ -12,7 +13,7 @@ interface KeyForm {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule, DecimalPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
