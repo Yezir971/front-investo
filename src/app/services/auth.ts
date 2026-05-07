@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   public signup(credential:CredentialSignup){
-    return this.http.post<{data : string}>(`${this.API_URL}/api/user`, credential).pipe(
+    return this.http.post<{data : string}>(`${this.API_URL}/api/user/signup`, credential).pipe(
       tap(response => {
         console.log(response)
       })
