@@ -1,0 +1,166 @@
+<main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+  <!-- Heading -->
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+    <div>
+      <p class="text-emerald-400 text-xs font-bold uppercase tracking-widest mb-2">Tableau de bord</p>
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tighter text-amber-50">
+        Bon retour <span class="text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-cyan-400">Trader</span>
+      </h1>
+      <p class="text-gray-400 mt-2">Pilote ton bot et tes clés en un coup d'œil.</p>
+    </div>
+
+    <div class="status-pill" [class.status-pill-active]="isBotActive()">
+      <span class="relative flex h-2 w-2">
+        @if (isBotActive()) {
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        }
+        <span class="relative inline-flex rounded-full h-2 w-2"
+          [class.bg-emerald-500]="isBotActive()"
+          [class.bg-gray-500]="!isBotActive()"></span>
+      </span>
+      {{ isBotActive() ? 'Bot actif' : 'Bot inactif' }}
+    </div>
+  </div>
+
+  <!-- Toast feedback -->
+  @if (feedback(); as fb) {
+    <div class="toast" [class.toast-success]="fb.type === 'success'" [class.toast-error]="fb.type === 'error'">
+      {{ fb.message }}
+    </div>
+  }
+
+  <!-- Top grid: balance + bot control -->
+  <div class="grid lg:grid-cols-3 gap-6 mb-6">
+    <!-- Balance card -->
+    <div class="card lg:col-span-2 p-8 flex flex-col justify-between">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Solde virtuel</p>
+          <h2 class="text-5xl font-extrabold tracking-tighter text-amber-50 mt-2">
+            @if (balance() !== null) {
+              {{ balance() | number: '1.2-2' }}
+            } @else {
+              <span class="text-gray-600">—</span>
+            }
+            <span class="text-2xl font-bold text-emerald-400 ml-2">{{ asset() }}</span>
+          </h2>
+          <p class="text-gray-500 text-sm mt-2">Mis à jour à la demande</p>
+        </div>
+
+        <button (click)="refreshBalance()" class="icon-btn" title="Rafraîchir">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582M20 20v-5h-.581M5.582 9A7.5 7.5 0 0118.418 15M18.418 15H14"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 pt-6 mt-6 border-t border-white/5">
+        <div>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Asset</p>
+          <p class="text-sm font-bold text-amber-50 mt-1">{{ asset() }}</p>
+        </div>
+        <div>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Statut bot</p>
+          <p class="text-sm font-bold mt-1" [class.text-emerald-400]="isBotActive()" [class.text-gray-400]="!isBotActive()">
+            {{ isBotActive() ? 'En cours' : 'Stoppé' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Mode</p>
+          <p class="text-sm font-bold text-amber-50 mt-1">Simulation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bot control card -->
+    <div class="card p-8 flex flex-col justify-between">
+      <div>
+        <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Contrôle du bot</p>
+        <h3 class="text-2xl font-bold text-amber-50 mt-2">
+          {{ isBotActive() ? 'Bot en cours' : 'Bot en attente' }}
+        </h3>
+        <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+          Démarre le bot pour qu'il commence à analyser le marché et passer des ordres en simulation.
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-3 mt-6">
+        <button
+          (click)="startBot()"
+          [disabled]="loading() || isBotActive()"
+          class="btn-gradient text-black px-6 py-3 rounded-xl font-bold shadow-[0_0_30px_rgba(0,255,153,0.2)] disabled:opacity-40 disabled:cursor-not-allowed">
+          Démarrer
+        </button>
+        <button
+          (click)="stopBot()"
+          [disabled]="loading() || !isBotActive()"
+          class="btn-ghost px-6 py-3 rounded-xl font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+          Arrêter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API keys form -->
+  <div class="card p-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Clés d'exchange</p>
+        <h3 class="text-2xl font-bold text-amber-50 mt-2">Connecter un exchange</h3>
+        <p class="text-gray-400 text-sm mt-1">Tes clés sont chiffrées avant d'être stockées.</p>
+      </div>
+      <div class="hidden md:flex w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 items-center justify-center">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+    </div>
+
+    <form (submit)="submitKeys($event)" class="grid md:grid-cols-2 gap-4">
+      <div class="md:col-span-2">
+        <label class="field-label">Exchange</label>
+        <select
+          [ngModel]="keyForm().exchange"
+          (ngModelChange)="updateKeyField('exchange', $event)"
+          name="exchange"
+          class="field-input">
+          <option value="cryptocom">Crypto.com</option>
+          <option value="mock">Mock (simulation)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="field-label">API Key</label>
+        <input
+          type="text"
+          [ngModel]="keyForm().api_key"
+          (ngModelChange)="updateKeyField('api_key', $event)"
+          name="api_key"
+          required
+          placeholder="xxxx-xxxx-xxxx"
+          class="field-input"/>
+      </div>
+
+      <div>
+        <label class="field-label">API Secret</label>
+        <input
+          type="password"
+          [ngModel]="keyForm().api_secret"
+          (ngModelChange)="updateKeyField('api_secret', $event)"
+          name="api_secret"
+          required
+          placeholder="••••••••••••"
+          class="field-input"/>
+      </div>
+
+      <div class="md:col-span-2 flex justify-end">
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="btn-gradient text-black px-8 py-3 rounded-xl font-bold shadow-[0_0_30px_rgba(0,255,153,0.2)] disabled:opacity-40 disabled:cursor-not-allowed">
+          Enregistrer les clés
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
