@@ -37,12 +37,18 @@ form input{
     padding: 3px;
     border-radius: 5px;
 }
-form button{
+button{
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    margin: 10px;
 }
+
 .btn-gradient {
     background: linear-gradient(135deg, #00ff99 0%, #00ccff 100%);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-gradient-bad{
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

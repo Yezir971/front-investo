@@ -28,4 +28,20 @@ export class Keys {
       })
     )
   }
+
+  public launch_bot(userId: string){
+    return this.http.post<{data : string}>(`${this.API_URL}/api/bot/start`, { user_id: userId }).pipe(
+      tap(response => {
+        console.log(response)
+      })
+    )
+  }
+
+  public stop_bot(userId: string){
+    return this.http.post<{data : string}>(`${this.API_URL}/api/bot/stop`, { user_id: userId }).pipe(
+      tap(response => {
+        console.log(response)
+      })
+    )
+  }
 }

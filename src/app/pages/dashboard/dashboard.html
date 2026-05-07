@@ -5,10 +5,22 @@
     <p>Pour avoir accès à la suite, veuillez entrez votre api key</p>
     <form action="" method="post" (onSubmit)="onSubmit($event)">
         <label for="api-key">API Key : </label>
-        <input type="text" placeholder="API Key" [formField]="secretKey" />
+        <input type="text" placeholder="API Key" [formField]="apiKeyForm.api_secret" />
 
         <label for="public-key">PUBLIC Key : </label>
-        <input type="text" placeholder="PUBLIC Key" [formField]="publicKey" />
+        <input type="text" placeholder="PUBLIC Key" [formField]="apiKeyForm.api_key" />
         <button class="btn-gradient" type="submit">Submit</button>
     </form>
+    <button class="btn-gradient" (click)="onLaunchBot($event)">Lancer le bot</button>
+    <button class="btn-gradient-bad" (click)="onStopBot($event)">Stoper le bot</button>
+    @if (loading()) {
+        <p>Chargement...</p>
+    } @else if (error()) {
+        <p class="error">{{ error() }}</p>
+    }@else if (config(); as data) {
+        <div class="dashboard">
+            <h2>Bonjour {{ data.user.name }}</h2>
+            <p>Solde : {{ data.user.virtual_balance }} €</p>
+        </div>
+        }
 </section>
